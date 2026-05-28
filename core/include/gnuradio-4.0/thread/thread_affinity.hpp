@@ -131,7 +131,7 @@ inline void setProcessName(const std::string_view& processName, int pid = detail
     if (!out.is_open()) {
         throw std::system_error(THREAD_UNINITIALISED, thread_exception(), std::format("setProcessName({},{})", processName, pid));
     }
-    out << std::string{processName.cbegin(), std::min(15LU, processName.size())};
+    out << std::string{processName.cbegin(), std::min(static_cast<std::size_t>(15), processName.size())};
     out.close();
 }
 #else
