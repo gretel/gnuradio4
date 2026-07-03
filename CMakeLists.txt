@@ -522,7 +522,7 @@ else()
   endif()
 endif()
 
-if(EMSCRIPTEN)
+if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
   FetchContent_Declare(
     cpp-httplib
     GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
@@ -578,7 +578,8 @@ if(NOT EMSCRIPTEN)
     find_path(GR_LIBSOUNDIO_INCLUDE_DIR soundio/soundio.h)
     find_library(GR_LIBSOUNDIO_LIBRARY soundio)
     if(NOT GR_LIBSOUNDIO_INCLUDE_DIR OR NOT GR_LIBSOUNDIO_LIBRARY)
-      message(FATAL_ERROR "libsoundio was not found. Install libsoundio-dev, libsoundio-devel, or libsoundio.")
+      message(STATUS "libsoundio not found — building stub gr-libsoundio (audio backend disabled)")
+      set(GR_LIBSOUNDIO_STUB TRUE)
     endif()
     set(GR_LIBSOUNDIO_INCLUDE_DIRS ${GR_LIBSOUNDIO_INCLUDE_DIR})
     set(GR_LIBSOUNDIO_COMPILE_OPTIONS "")
@@ -588,6 +589,7 @@ if(NOT EMSCRIPTEN)
     set(GR_LIBSOUNDIO_PKGCONFIG_LIBS "-lsoundio")
   endif()
 
+  if(NOT GR_LIBSOUNDIO_STUB)
   add_library(gr-libsoundio INTERFACE)
   add_library(gnuradio4::gr-libsoundio ALIAS gr-libsoundio)
   target_include_directories(gr-libsoundio INTERFACE ${GR_LIBSOUNDIO_INCLUDE_DIRS})
@@ -597,8 +599,14 @@ if(NOT EMSCRIPTEN)
   target_link_libraries(gr-libsoundio INTERFACE ${GR_LIBSOUNDIO_LIBRARIES})
   string(APPEND GR4_PKGCONFIG_EXTRA_LIBS " ${GR_LIBSOUNDIO_PKGCONFIG_LIBS}")
   install(TARGETS gr-libsoundio EXPORT gnuradio4Targets)
-endif()
+  else()
+    add_library(gr-libsoundio INTERFACE)
+    add_library(gnuradio4::gr-libsoundio ALIAS gr-libsoundio)
+    message(STATUS "libsoundio not available — gr-libsoundio is a no-op stub")
+    install(TARGETS gr-libsoundio EXPORT gnuradio4Targets)
+  endif()
 
+endif()
 set(GR_HTTP_ENABLED TRUE) # Fetch API is always available
 # Native HTTP support using CPR and libCurl
 if(NOT
@@ -661,7 +669,7 @@ if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
     ut
     vir-simd)
 endif()
-if(EMSCRIPTEN)
+if(EMSCRIPTEN OR GR_USE_FETCHCONTENT_DEPS)
   list(APPEND GR_FETCH_MAKE_AVAILABLE_DEPS cpp-httplib)
 endif()
 
