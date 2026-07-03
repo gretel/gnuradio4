@@ -1,0 +1,263 @@
+{
+  "version": 8,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 27,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "dev-base",
+      "hidden": true,
+      "displayName": "Development (base)",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
+        "USE_CCACHE": "ON",
+        "GR_USE_FETCHCONTENT_DEPS": "ON",
+        "GR_ENABLE_HTTP": "OFF",
+        "GR_ENABLE_BLOCK_REGISTRY": "OFF",
+        "INTERNAL_ENABLE_BLOCK_PLUGINS": "OFF",
+        "WARNINGS_AS_ERRORS": "OFF"
+      }
+    },
+    {
+      "name": "dev-macos",
+      "displayName": "Development (macOS)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "binaryDir": "${sourceDir}/build/dev",
+      "toolchainFile": "${sourceDir}/cmake/toolchain-macos-homebrew-llvm.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "dev-linux",
+      "displayName": "Development (Linux)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "binaryDir": "${sourceDir}/build/dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "dev-windows",
+      "displayName": "Development (Windows)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "binaryDir": "${sourceDir}/build/dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang"
+      }
+    },
+    {
+      "name": "ci-macos",
+      "displayName": "CI (macOS)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "binaryDir": "${sourceDir}/build/ci",
+      "toolchainFile": "${sourceDir}/cmake/toolchain-macos-homebrew-llvm.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "WARNINGS_AS_ERRORS": "OFF",
+        "ENABLE_TESTING": "ON"
+      }
+    },
+    {
+      "name": "ci-linux",
+      "displayName": "CI (Linux)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "binaryDir": "${sourceDir}/build/ci",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "WARNINGS_AS_ERRORS": "OFF",
+        "ENABLE_TESTING": "ON"
+      }
+    },
+    {
+      "name": "ci-windows",
+      "displayName": "CI (Windows)",
+      "inherits": "dev-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "binaryDir": "${sourceDir}/build/ci",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang",
+        "WARNINGS_AS_ERRORS": "OFF",
+        "ENABLE_TESTING": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "dev-macos",
+      "displayName": "Build (macOS)",
+      "configurePreset": "dev-macos",
+      "jobs": 12,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "dev-linux",
+      "displayName": "Build (Linux)",
+      "configurePreset": "dev-linux",
+      "jobs": 0,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "dev-windows",
+      "displayName": "Build (Windows)",
+      "configurePreset": "dev-windows",
+      "jobs": 0,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "dev-macos",
+      "displayName": "Test (macOS)",
+      "configurePreset": "dev-macos",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "dev-linux",
+      "displayName": "Test (Linux)",
+      "configurePreset": "dev-linux",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "dev-windows",
+      "displayName": "Test (Windows)",
+      "configurePreset": "dev-windows",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "dev-macos",
+      "displayName": "Workflow (macOS)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "dev-macos"
+        },
+        {
+          "type": "build",
+          "name": "dev-macos"
+        },
+        {
+          "type": "test",
+          "name": "dev-macos"
+        }
+      ]
+    },
+    {
+      "name": "dev-linux",
+      "displayName": "Workflow (Linux)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "dev-linux"
+        },
+        {
+          "type": "build",
+          "name": "dev-linux"
+        },
+        {
+          "type": "test",
+          "name": "dev-linux"
+        }
+      ]
+    },
+    {
+      "name": "dev-windows",
+      "displayName": "Workflow (Windows)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "dev-windows"
+        },
+        {
+          "type": "build",
+          "name": "dev-windows"
+        },
+        {
+          "type": "test",
+          "name": "dev-windows"
+        }
+      ]
+    }
+  ]
+}
