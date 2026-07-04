@@ -99,17 +99,17 @@ inline constexpr pthread_t getPosixHandler(thread_type auto&... t) noexcept {
 inline std::string getThreadName(const void* handle) {
     // Use GetThreadDescription on Win10+; fallback for older Windows
     wchar_t* buf = nullptr;
-    HANDLE h = const_cast<HANDLE>(static_cast<const HANDLE>(handle));
-    // GetThreadDescription requires a real handle; GetCurrentThread() is a pseudo-handle
-    // DuplicateHandle would be needed for cross-thread queries, but for self-query:
     if (handle == GetCurrentThread()) {
         HRESULT hr = GetThreadDescription(GetCurrentThread(), &buf);
         if (SUCCEEDED(hr) && buf) {
             int len = WideCharToMultiByte(CP_UTF8, 0, buf, -1, nullptr, 0, nullptr, nullptr);
-            std::string name(static_cast<std::size_t>(len) - 1, '\0');
-            WideCharToMultiByte(CP_UTF8, 0, buf, -1, name.data(), len, nullptr, nullptr);
+            std::string name;
+            if (len > 0) {
+                name.resize(static_cast<std::size_t>(len) - 1);
+                WideCharToMultiByte(CP_UTF8, 0, buf, -1, name.data(), len, nullptr, nullptr);
+            }
             LocalFree(buf);
-            return name;
+            return name.empty() ? "unnamed thread" : name;
         }
     }
     return "unnamed thread";
