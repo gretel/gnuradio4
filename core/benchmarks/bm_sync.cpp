@@ -10,6 +10,8 @@
 #include <gnuradio-4.0/testing/NullSources.hpp>
 #include <gnuradio-4.0/testing/TagMonitors.hpp>
 
+using namespace std::string_literals;
+
 inline constexpr std::size_t nRepeats = 1; // must be 1 at the moment
 inline constexpr gr::Size_t  nPorts   = 2U;
 inline constexpr gr::Size_t  nSamples = 4'000'000'000;

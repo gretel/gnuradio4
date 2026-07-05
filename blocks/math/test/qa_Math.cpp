@@ -7,6 +7,8 @@
 #include <gnuradio-4.0/Scheduler.hpp>
 #include <gnuradio-4.0/testing/TagMonitors.hpp>
 
+using namespace std::string_literals;
+
 template<typename T>
 struct TestParameters {
     std::vector<gr::Tensor<T>> inputs;
