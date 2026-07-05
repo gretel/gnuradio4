@@ -9,6 +9,7 @@
 #include <format>
 
 using namespace boost::ut;
+using namespace std::string_literals;
 
 namespace gr::test {
 

@@ -6,6 +6,8 @@
 
 #include <format>
 
+using namespace std::string_literals;
+
 struct TestParams {
     std::string   testName       = "";
     gr::Size_t    nSamples       = 0U;                                        // 0 -> take inValues[i].size()
