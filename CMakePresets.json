@@ -112,10 +112,10 @@
       "binaryDir": "${sourceDir}/build/ci",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_C_COMPILER": "clang",
         "WARNINGS_AS_ERRORS": "OFF",
-        "ENABLE_TESTING": "ON"
+        "ENABLE_TESTING": "ON",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang"
       }
     }
   ],
@@ -124,7 +124,7 @@
       "name": "dev-macos",
       "displayName": "Build (macOS)",
       "configurePreset": "dev-macos",
-      "jobs": 12,
+      "inherits": "dev-base",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -135,7 +135,7 @@
       "name": "dev-linux",
       "displayName": "Build (Linux)",
       "configurePreset": "dev-linux",
-      "jobs": 0,
+      "inherits": "dev-base",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -146,7 +146,7 @@
       "name": "dev-windows",
       "displayName": "Build (Windows)",
       "configurePreset": "dev-windows",
-      "jobs": 0,
+      "inherits": "dev-base",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
